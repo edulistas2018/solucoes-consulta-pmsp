@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soluções de Consulta — PMSP | Base Cronológica</title>
+  <style>
+    :root {
+      --bg-page: #F6F7F9;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F8FAFC;
+      --bg-active-soft: #EEF4FB;
+      --bg-success-soft: #ECFDF3;
+      --bg-warn-soft: #FEF3C7;
+      --border: #E2E6ED;
+      --border-strong: #CBD5E1;
+      --navy: #0F2942;
+      --navy-hover: #173B5E;
+      --accent: #1D5B9B;
+      --text-main: #102033;
+      --text-muted: #526277;
+      --text-success: #15803D;
+      --text-warn: #92400E;
+      --shadow-sm: 0 1px 2px rgba(15, 41, 66, 0.05);
+      --shadow-md: 0 4px 14px rgba(15, 41, 66, 0.06);
+      --radius-lg: 12px;
+      --radius-md: 8px;
+      --radius-sm: 6px;
+      --font-sans: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      --font-mono: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Consolas, monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .top-stripe {
+      height: 3px;
+      width: 100%;
+      background: linear-gradient(90deg, var(--navy) 0%, var(--accent) 100%);
+    }
+
+    .container {
+      max-width: 940px;
+      margin: 0 auto;
+      padding: 24px 20px 32px;
+    }
+
+    /* Header & Controls */
+    .header-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px 24px;
+      margin-bottom: 16px;
+    }
+
+    .title-group {
+      min-width: 240px;
+      flex: 1 1 320px;
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.015em;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .controls-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 14px 18px;
+    }
+
+    .control-block {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .control-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .segmented {
+      display: inline-flex;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .segmented-btn {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 6px 11px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .segmented-btn:hover {
+      color: var(--text-main);
+    }
+
+    .segmented-btn[aria-pressed="true"] {
+      background: var(--bg-card);
+      color: var(--navy);
+      box-shadow: 0 1px 2px rgba(15, 41, 66, 0.1);
+    }
+
+    .year-lookup-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .year-input-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .year-input {
+      width: 108px;
+      height: 34px;
+      padding: 0 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-main);
+      background: var(--bg-card);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .year-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(29, 91, 155, 0.15);
+    }
+
+    .year-feedback {
+      min-height: 17px;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .year-feedback.is-match {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .year-feedback.is-warn {
+      color: var(--text-warn);
+      font-weight: 500;
+    }
+
+    /* Chronological Selector */
+    .selector-section {
+      margin-bottom: 14px;
+    }
+
+    .period-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .period-tab {
+      appearance: none;
+      text-align: left;
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 15px 16px 14px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+      position: relative;
+      font-family: inherit;
+      color: var(--text-main);
+    }
+
+    .period-tab:hover {
+      border-color: #B4C5D8;
+      box-shadow: var(--shadow-md);
+    }
+
+    .period-tab:focus-visible,
+    .segmented-btn:focus-visible,
+    .btn:focus-visible,
+    .timeline-segment:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .period-tab[aria-selected="true"] {
+      background: var(--bg-active-soft);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), var(--shadow-md);
+    }
+
+    .period-tab-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .period-years {
+      font-size: 1.2rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--navy);
+      letter-spacing: -0.01em;
+    }
+
+    .period-tab[aria-selected="true"] .period-years {
+      color: var(--accent);
+    }
+
+    .kbd-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 5px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-subtle);
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-muted);
+    }
+
+    .period-tab[aria-selected="true"] .kbd-badge {
+      border-color: #B6CEE8;
+      background: #FFFFFF;
+      color: var(--accent);
+    }
+
+    .period-subtitle {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .period-tab-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      margin-top: 2px;
+      min-height: 22px;
+    }
+
+    .duration-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .period-tab[aria-selected="true"] .duration-pill {
+      background: #FFFFFF;
+      border-color: #C7DAEE;
+      color: var(--navy);
+    }
+
+    .session-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.73rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      color: var(--text-success);
+      background: var(--bg-success-soft);
+      border: 1px solid #BBF7D0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s ease;
+    }
+
+    .session-pill.is-opened {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .session-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #16A34A;
+    }
+
+    /* Proportional Timeline Bar */
+    .timeline-wrap {
+      margin-top: 10px;
+      padding: 0 2px;
+    }
+
+    .timeline-track {
+      display: flex;
+      gap: 4px;
+      width: 100%;
+      height: 8px;
+    }
+
+    .timeline-segment {
+      appearance: none;
+      border: 0;
+      padding: 0;
+      height: 100%;
+      border-radius: 999px;
+      background: #D8E0EB;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+      flex-basis: 0;
+    }
+
+    .timeline-segment:hover {
+      background: #9DB7D4;
+    }
+
+    .timeline-segment.is-active {
+      background: var(--accent);
+    }
+
+    .timeline-scale {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Fixed Active Panel */
+    .active-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-sm);
+      min-height: 184px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .panel-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px 16px;
+    }
+
+    .panel-identity {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 8px 12px;
+    }
+
+    .panel-tag {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      background: var(--bg-active-soft);
+      border: 1px solid #C7DAEE;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--navy);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .panel-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .panel-status {
+      min-height: 24px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+    }
+
+    .panel-status.is-opened {
+      color: var(--text-success);
+      background: var(--bg-success-soft);
+      border-color: #BBF7D0;
+    }
+
+    .panel-status.is-blocked {
+      color: var(--text-warn);
+      background: var(--bg-warn-soft);
+      border-color: #FDE68A;
+    }
+
+    .panel-url-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-main);
+      overflow: hidden;
+    }
+
+    .panel-url-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .panel-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      height: 38px;
+      padding: 0 15px;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .btn-primary {
+      background: var(--navy);
+      color: #FFFFFF;
+      border: 1px solid var(--navy);
+    }
+
+    .btn-primary:hover {
+      background: var(--navy-hover);
+      border-color: var(--navy-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-strong);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-subtle);
+      border-color: #94A3B8;
+    }
+
+    .btn-secondary.is-copied {
+      color: var(--text-success);
+      border-color: #86EFAC;
+      background: var(--bg-success-soft);
+    }
+
+    /* Footer */
+    .footer-note {
+      margin-top: 16px;
+      padding: 0 4px;
+      font-size: 0.79rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    .footer-note strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .icon {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    /* Responsive for docked sidebar usage */
+    @media (max-width: 720px) {
+      .container {
+        padding: 16px 14px 24px;
+      }
+
+      .header-card {
+        padding: 16px;
+      }
+
+      .period-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .period-tab {
+        padding: 13px 14px;
+      }
+
+      .active-panel {
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 460px) {
+      h1 {
+        font-size: 1.25rem;
+      }
+
+      .controls-group {
+        width: 100%;
+      }
+
+      .segmented {
+        width: 100%;
+      }
+
+      .segmented-btn {
+        flex: 1 1 0;
+        justify-content: center;
+      }
+
+      .panel-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-stripe" aria-hidden="true"></div>
+
+  <main class="container">
+    <header class="header-card">
+      <div class="title-group">
+        <div class="eyebrow">PMSP · Base Cronológica</div>
+        <h1>Soluções de Consulta</h1>
+        <p class="subtitle">Selecione o período para abrir a pesquisa no Google NotebookLM</p>
+      </div>
+
+      <div class="controls-group">
+        <div class="control-block">
+          <span class="control-label" id="mode-label">Modo de abertura</span>
+          <div class="segmented" role="group" aria-labelledby="mode-label">
+            <button type="button" class="segmented-btn" data-mode="side" aria-pressed="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                <line x1="12" y1="4" x2="12" y2="20"></line>
+              </svg>
+              Janela lateral
+            </button>
+            <button type="button" class="segmented-btn" data-mode="tab" aria-pressed="false">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 6h7l2 3h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"></path>
+              </svg>
+              Aba dedicada
+            </button>
+          </div>
+        </div>
+
+        <div class="year-lookup-wrap">
+          <label class="control-label" for="year-input">Ir para ano</label>
+          <div class="year-input-row">
+            <input
+              id="year-input"
+              class="year-input"
+              type="text"
+              inputmode="numeric"
+              maxlength="4"
+              placeholder="Ex.: 2012"
+              autocomplete="off"
+              aria-describedby="year-feedback"
+            >
+          </div>
+          <div id="year-feedback" class="year-feedback" aria-live="polite">2007 a 2025 · digite o ano</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="selector-section" aria-label="Seleção de período cronológico">
+      <div class="period-grid" role="tablist" aria-label="Períodos cronológicos das Soluções de Consulta">
+        <button
+          type="button"
+          class="period-tab"
+          role="tab"
+          id="tab-2007-2008"
+          data-period-id="2007-2008"
+          aria-selected="false"
+          aria-controls="active-base-panel"
+          tabindex="-1"
+        >
+          <div class="period-tab-top">
+            <span class="period-years">2007 a 2008</span>
+            <kbd class="kbd-badge" title="Atalho: tecla 1">1</kbd>
+          </div>
+          <div class="period-subtitle">Base histórica inicial</div>
+          <div class="period-tab-bottom">
+            <span class="duration-pill">2 anos</span>
+            <span class="session-pill" data-session-pill="2007-2008">
+              <span class="session-dot" aria-hidden="true"></span>
+              Aberta
+            </span>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          class="period-tab"
+          role="tab"
+          id="tab-2009-2014"
+          data-period-id="2009-2014"
+          aria-selected="false"
+          aria-controls="active-base-panel"
+          tabindex="-1"
+        >
+          <div class="period-tab-top">
+            <span class="period-years">2009 a 2014</span>
+            <kbd class="kbd-badge" title="Atalho: tecla 2">2</kbd>
+          </div>
+          <div class="period-subtitle">Base intermediária</div>
+          <div class="period-tab-bottom">
+            <span class="duration-pill">6 anos</span>
+            <span class="session-pill" data-session-pill="2009-2014">
+              <span class="session-dot" aria-hidden="true"></span>
+              Aberta
+            </span>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          class="period-tab"
+          role="tab"
+          id="tab-2015-2025"
+          data-period-id="2015-2025"
+          aria-selected="true"
+          aria-controls="active-base-panel"
+          tabindex="0"
+        >
+          <div class="period-tab-top">
+            <span class="period-years">2015 a 2025</span>
+            <kbd class="kbd-badge" title="Atalho: tecla 3">3</kbd>
+          </div>
+          <div class="period-subtitle">Base recente consolidada</div>
+          <div class="period-tab-bottom">
+            <span class="duration-pill">11 anos</span>
+            <span class="session-pill" data-session-pill="2015-2025">
+              <span class="session-dot" aria-hidden="true"></span>
+              Aberta
+            </span>
+          </div>
+        </button>
+      </div>
+
+      <div class="timeline-wrap" aria-label="Linha do tempo proporcional 2007 a 2025">
+        <div class="timeline-track">
+          <button
+            type="button"
+            class="timeline-segment"
+            data-period-id="2007-2008"
+            style="flex-grow: 2;"
+            title="2007 a 2008 (2 anos)"
+            aria-label="Selecionar e abrir período 2007 a 2008"
+          ></button>
+          <button
+            type="button"
+            class="timeline-segment"
+            data-period-id="2009-2014"
+            style="flex-grow: 6;"
+            title="2009 a 2014 (6 anos)"
+            aria-label="Selecionar e abrir período 2009 a 2014"
+          ></button>
+          <button
+            type="button"
+            class="timeline-segment is-active"
+            data-period-id="2015-2025"
+            style="flex-grow: 11;"
+            title="2015 a 2025 (11 anos)"
+            aria-label="Selecionar e abrir período 2015 a 2025"
+          ></button>
+        </div>
+        <div class="timeline-scale" aria-hidden="true">
+          <span>2007</span>
+          <span>2009</span>
+          <span>2015</span>
+          <span>2025</span>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="active-base-panel"
+      class="active-panel"
+      role="tabpanel"
+      aria-labelledby="tab-2015-2025"
+    >
+      <div class="panel-head">
+        <div class="panel-identity">
+          <span class="panel-tag">Base selecionada</span>
+          <h2 id="panel-title" class="panel-title">2015 a 2025 · 11 anos</h2>
+          <span id="panel-subtitle" class="panel-subtitle">Base recente consolidada</span>
+        </div>
+      </div>
+
+      <div id="panel-status" class="panel-status" aria-live="polite">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span id="panel-status-text">Clique em um período acima ou em Abrir base para iniciar a pesquisa</span>
+      </div>
+
+      <div class="panel-url-box" title="Link da base selecionada no Google NotebookLM">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+        </svg>
+        <span id="panel-url-text" class="panel-url-text">https://notebooklm.link.google/cT7D4riHtHiZ</span>
+      </div>
+
+      <div class="panel-actions">
+        <button type="button" id="open-primary-btn" class="btn btn-primary">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          Abrir / Focar base
+        </button>
+
+        <a
+          id="open-tab-link"
+          class="btn btn-secondary"
+          href="https://notebooklm.link.google/cT7D4riHtHiZ"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Abrir em nova aba
+        </a>
+
+        <button type="button" id="copy-link-btn" class="btn btn-secondary">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+          </svg>
+          <span id="copy-link-label">Copiar link</span>
+        </button>
+      </div>
+    </section>
+
+    <footer class="footer-note">
+      <strong>Nota técnica:</strong> O Google NotebookLM bloqueia exibição interna em <code>&lt;iframe&gt;</code> (<code>X-Frame-Options: DENY</code>), por isso este portal utiliza janela lateral ou aba dedicada para alternar entre os períodos sem recarregar a página (atalhos de teclado: <strong>1</strong>, <strong>2</strong> e <strong>3</strong>). Pela política de isolamento de origem do Google (<code>COOP</code>), algumas trocas entre bases podem abrir uma nova aba ou janela no navegador.
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const PERIODS = [
+        {
+          id: '2007-2008',
+          key: '1',
+          label: '2007 a 2008',
+          startYear: 2007,
+          endYear: 2008,
+          yearsCount: 2,
+          subtitle: 'Base histórica inicial',
+          url: 'https://notebooklm.link.google/6iUS18dY5j4S'
+        },
+        {
+          id: '2009-2014',
+          key: '2',
+          label: '2009 a 2014',
+          startYear: 2009,
+          endYear: 2014,
+          yearsCount: 6,
+          subtitle: 'Base intermediária',
+          url: 'https://notebooklm.link.google/Is0q2mS9nDsp'
+        },
+        {
+          id: '2015-2025',
+          key: '3',
+          label: '2015 a 2025',
+          startYear: 2015,
+          endYear: 2025,
+          yearsCount: 11,
+          subtitle: 'Base recente consolidada',
+          url: 'https://notebooklm.link.google/cT7D4riHtHiZ'
+        }
+      ];
+
+      const TARGET_NAME = 'pmsp_solucoes_consulta_notebooklm';
+      const STORAGE_MODE_KEY = 'pmsp_sc_mode';
+      const STORAGE_PERIOD_KEY = 'pmsp_sc_period';
+
+      let dedicatedWindow = null;
+      let activePeriodId = '2015-2025';
+      let activeMode = 'side';
+      let copyTimer = null;
+      const openedPeriods = new Set();
+      const lastOpenInfo = Object.create(null);
+
+      // Safe storage & history helpers (compatible with file://)
+      function safeGetStorage(key) {
+        try {
+          return window.localStorage.getItem(key);
+        } catch (_) {
+          return null;
+        }
+      }
+
+      function safeSetStorage(key, value) {
+        try {
+          window.localStorage.setItem(key, value);
+        } catch (_) {
+          // Ignore storage restrictions under file://
+        }
+      }
+
+      function safeReplaceHash(periodId) {
+        try {
+          if (window.history && typeof window.history.replaceState === 'function') {
+            window.history.replaceState(null, '', '#' + periodId);
+          }
+        } catch (_) {
+          // Ignore history restrictions under file://
+        }
+      }
+
+      function getPeriodById(id) {
+        return PERIODS.find(function (p) { return p.id === id; }) || PERIODS[2];
+      }
+
+      function getPeriodByYear(year) {
+        return PERIODS.find(function (p) {
+          return year >= p.startYear && year <= p.endYear;
+        }) || null;
+      }
+
+      function formatCurrentTime() {
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+        return hh + ':' + mm;
+      }
+
+      // DOM References
+      const modeButtons = Array.prototype.slice.call(document.querySelectorAll('.segmented-btn[data-mode]'));
+      const tabButtons = Array.prototype.slice.call(document.querySelectorAll('.period-tab[data-period-id]'));
+      const timelineSegments = Array.prototype.slice.call(document.querySelectorAll('.timeline-segment[data-period-id]'));
+      const yearInput = document.getElementById('year-input');
+      const yearFeedback = document.getElementById('year-feedback');
+
+      const activePanel = document.getElementById('active-base-panel');
+      const panelTitle = document.getElementById('panel-title');
+      const panelSubtitle = document.getElementById('panel-subtitle');
+      const panelStatus = document.getElementById('panel-status');
+      const panelStatusText = document.getElementById('panel-status-text');
+      const panelUrlText = document.getElementById('panel-url-text');
+      const openPrimaryBtn = document.getElementById('open-primary-btn');
+      const openTabLink = document.getElementById('open-tab-link');
+      const copyLinkBtn = document.getElementById('copy-link-btn');
+      const copyLinkLabel = document.getElementById('copy-link-label');
+
+      function renderMode() {
+        modeButtons.forEach(function (btn) {
+          btn.setAttribute('aria-pressed', String(btn.dataset.mode === activeMode));
+        });
+      }
+
+      function renderTabsAndPanel() {
+        const period = getPeriodById(activePeriodId);
+
+        tabButtons.forEach(function (btn) {
+          const isSelected = btn.dataset.periodId === period.id;
+          btn.setAttribute('aria-selected', String(isSelected));
+          btn.setAttribute('tabindex', isSelected ? '0' : '-1');
+
+          const pill = btn.querySelector('[data-session-pill]');
+          if (pill) {
+            pill.classList.toggle('is-opened', openedPeriods.has(btn.dataset.periodId));
+          }
+        });
+
+        timelineSegments.forEach(function (seg) {
+          seg.classList.toggle('is-active', seg.dataset.periodId === period.id);
+        });
+
+        activePanel.setAttribute('aria-labelledby', 'tab-' + period.id);
+        panelTitle.textContent = period.label + ' · ' + period.yearsCount + ' anos';
+        panelSubtitle.textContent = period.subtitle;
+        panelUrlText.textContent = period.url;
+        openTabLink.setAttribute('href', period.url);
+
+        const info = lastOpenInfo[period.id];
+        panelStatus.classList.remove('is-opened', 'is-blocked');
+
+        if (info && info.blocked) {
+          panelStatus.classList.add('is-blocked');
+          panelStatusText.textContent = 'O navegador bloqueou a abertura automática. Use "Abrir em nova aba" ou libere pop-ups.';
+        } else if (info && info.time) {
+          panelStatus.classList.add('is-opened');
+          panelStatusText.textContent = 'Última abertura às ' + info.time + ' · ' + info.modeLabel;
+        } else {
+          panelStatusText.textContent = 'Clique em um período acima ou em Abrir base para iniciar a pesquisa';
+        }
+      }
+
+      function setMode(mode) {
+        if (mode !== 'side' && mode !== 'tab') return;
+        activeMode = mode;
+        safeSetStorage(STORAGE_MODE_KEY, mode);
+        renderMode();
+      }
+
+      function selectPeriod(periodId, options) {
+        const period = getPeriodById(periodId);
+        activePeriodId = period.id;
+        safeSetStorage(STORAGE_PERIOD_KEY, period.id);
+        if (!options || options.syncHash !== false) {
+          safeReplaceHash(period.id);
+        }
+        renderTabsAndPanel();
+      }
+
+      function buildSideWindowFeatures() {
+        const availLeft = typeof window.screen.availLeft === 'number' ? window.screen.availLeft : 0;
+        const availTop = typeof window.screen.availTop === 'number' ? window.screen.availTop : 0;
+        const availW = window.screen.availWidth || 1280;
+        const availH = window.screen.availHeight || 800;
+
+        const width = Math.min(1180, Math.max(760, Math.round(availW * 0.68)));
+        const height = Math.max(640, Math.round(availH * 0.92));
+        const left = availLeft + Math.max(0, availW - width - 16);
+        const top = availTop + Math.max(0, Math.round((availH - height) / 2));
+
+        return (
+          'popup=yes' +
+          ',width=' + width +
+          ',height=' + height +
+          ',left=' + left +
+          ',top=' + top +
+          ',resizable=yes' +
+          ',scrollbars=yes'
+        );
+      }
+
+      function openPeriod(periodId) {
+        const period = getPeriodById(periodId);
+        selectPeriod(period.id);
+
+        let opened = null;
+        try {
+          if (activeMode === 'side') {
+            opened = window.open(period.url, TARGET_NAME, buildSideWindowFeatures());
+          } else {
+            opened = window.open(period.url, TARGET_NAME);
+          }
+        } catch (_) {
+          opened = null;
+        }
+
+        if (opened) {
+          dedicatedWindow = opened;
+          openedPeriods.add(period.id);
+          lastOpenInfo[period.id] = {
+            blocked: false,
+            time: formatCurrentTime(),
+            modeLabel: activeMode === 'side' ? 'Janela lateral' : 'Aba dedicada'
+          };
+          try {
+            dedicatedWindow.focus();
+          } catch (_) {
+            // Cross-origin focus may be restricted
+          }
+        } else {
+          lastOpenInfo[period.id] = {
+            blocked: true,
+            time: null,
+            modeLabel: null
+          };
+        }
+
+        renderTabsAndPanel();
+      }
+
+      function resetCopyState() {
+        copyLinkBtn.classList.remove('is-copied');
+        copyLinkLabel.textContent = 'Copiar link';
+      }
+
+      function showCopyFeedback() {
+        if (copyTimer) {
+          window.clearTimeout(copyTimer);
+        }
+        copyLinkBtn.classList.add('is-copied');
+        copyLinkLabel.textContent = 'Link copiado';
+        copyTimer = window.setTimeout(resetCopyState, 2000);
+      }
+
+      function fallbackCopyText(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-9999px';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        let ok = false;
+        try {
+          ok = document.execCommand('copy');
+        } catch (_) {
+          ok = false;
+        }
+        document.body.removeChild(ta);
+        return ok;
+      }
+
+      function copyActiveUrl() {
+        const url = getPeriodById(activePeriodId).url;
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+          navigator.clipboard.writeText(url).then(
+            function () { showCopyFeedback(); },
+            function () {
+              if (fallbackCopyText(url)) showCopyFeedback();
+            }
+          );
+          return;
+        }
+        if (fallbackCopyText(url)) {
+          showCopyFeedback();
+        }
+      }
+
+      function updateYearLookup(rawValue) {
+        const digits = rawValue.replace(/\D/g, '').slice(0, 4);
+        if (digits !== rawValue) {
+          yearInput.value = digits;
+        }
+
+        yearFeedback.classList.remove('is-match', 'is-warn');
+
+        if (digits.length < 4) {
+          yearFeedback.textContent = '2007 a 2025 · digite o ano';
+          return null;
+        }
+
+        const year = Number(digits);
+        const match = getPeriodByYear(year);
+        if (match) {
+          selectPeriod(match.id);
+          yearFeedback.classList.add('is-match');
+          yearFeedback.textContent = year + ' → ' + match.label + ' · Enter para abrir';
+          return match;
+        }
+
+        yearFeedback.classList.add('is-warn');
+        yearFeedback.textContent = 'Disponível de 2007 a 2025';
+        return null;
+      }
+
+      // Event Bindings
+      modeButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          setMode(btn.dataset.mode);
+        });
+      });
+
+      tabButtons.forEach(function (btn, index) {
+        btn.addEventListener('click', function () {
+          openPeriod(btn.dataset.periodId);
+        });
+
+        btn.addEventListener('keydown', function (event) {
+          let nextIndex = null;
+          if (event.key === 'ArrowRight') {
+            nextIndex = (index + 1) % tabButtons.length;
+          } else if (event.key === 'ArrowLeft') {
+            nextIndex = (index - 1 + tabButtons.length) % tabButtons.length;
+          } else if (event.key === 'Home') {
+            nextIndex = 0;
+          } else if (event.key === 'End') {
+            nextIndex = tabButtons.length - 1;
+          }
+
+          if (nextIndex !== null) {
+            event.preventDefault();
+            const targetBtn = tabButtons[nextIndex];
+            selectPeriod(targetBtn.dataset.periodId);
+            targetBtn.focus();
+          }
+        });
+      });
+
+      timelineSegments.forEach(function (seg) {
+        seg.addEventListener('click', function () {
+          openPeriod(seg.dataset.periodId);
+        });
+      });
+
+      openPrimaryBtn.addEventListener('click', function () {
+        openPeriod(activePeriodId);
+      });
+
+      openTabLink.addEventListener('click', function () {
+        const period = getPeriodById(activePeriodId);
+        openedPeriods.add(period.id);
+        lastOpenInfo[period.id] = {
+          blocked: false,
+          time: formatCurrentTime(),
+          modeLabel: 'Nova aba'
+        };
+        renderTabsAndPanel();
+      });
+
+      copyLinkBtn.addEventListener('click', copyActiveUrl);
+
+      yearInput.addEventListener('input', function () {
+        updateYearLookup(yearInput.value);
+      });
+
+      yearInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          const match = updateYearLookup(yearInput.value);
+          if (match) {
+            event.preventDefault();
+            openPeriod(match.id);
+          }
+        }
+      });
+
+      document.addEventListener('keydown', function (event) {
+        const target = event.target;
+        const tag = target && target.tagName;
+        if (
+          tag === 'INPUT' ||
+          tag === 'TEXTAREA' ||
+          tag === 'SELECT' ||
+          (target && target.isContentEditable)
+        ) {
+          return;
+        }
+        if (event.ctrlKey || event.altKey || event.metaKey) {
+          return;
+        }
+
+        const matched = PERIODS.find(function (p) { return p.key === event.key; });
+        if (matched) {
+          event.preventDefault();
+          openPeriod(matched.id);
+        }
+      });
+
+      // Initialize state from hash or localStorage
+      (function init() {
+        const savedMode = safeGetStorage(STORAGE_MODE_KEY);
+        if (savedMode === 'side' || savedMode === 'tab') {
+          activeMode = savedMode;
+        }
+
+        const hashId = (window.location.hash || '').replace(/^#/, '');
+        const hashPeriod = PERIODS.find(function (p) { return p.id === hashId; });
+        const savedPeriodId = safeGetStorage(STORAGE_PERIOD_KEY);
+        const savedPeriod = PERIODS.find(function (p) { return p.id === savedPeriodId; });
+
+        if (hashPeriod) {
+          activePeriodId = hashPeriod.id;
+        } else if (savedPeriod) {
+          activePeriodId = savedPeriod.id;
+        }
+
+        renderMode();
+        renderTabsAndPanel();
+      })();
+    })();
+  </script>
+</body>
+</html>
